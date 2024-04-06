@@ -1,0 +1,158 @@
+<header class="navbar navbar-expand-lg navbar-dark fixed-top nga-navbar">
+  <nav class="container" aria-label="Main navigation">
+    <a routerLink="/" class="navbar-brand" alt="Accueil">
+      <img src="./assets/params/images/logo/ganatan-logo.png" srcset="./assets/params/images/logo/ganatan-logo.png,
+      ./assets/params/images/logo/ganatan-logo@2x.png 2x" width="25" height="25" alt="Ganatan Logo">
+      <span class="nga-logo mx-1" aria-label="Ganatan">Vamonos RECIO!</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse flex-row-reverse" id="navbarCollapse">
+      <form class="d-flex" *ngIf="!changeLogins">
+        <button type="button" class="btn btn-sm nga-btn-navbar me-2" (click)="openRegister()"><i
+            class="fas fa-user-plus me-2"></i>Registrarse</button>
+        <button type="button" class="btn btn-sm btn-outline-light me-2" (click)="logear()"><i
+            class="fas fa-sign-in-alt me-2"></i>Ingresar</button>
+      </form>
+      <form class="d-flex" *ngIf="changeLogins">
+        <button type="button" class="btn btn-sm nga-btn-navbar me-2" (click)="cerrarSesion()"><i
+            class="fas fa-user-plus me-2"></i>{{nombre}}</button>
+      </form>
+    </div>
+  </nav>
+</header>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="loginModal">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-5 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-5 pt-0">
+        <div class="card-nga">
+          <h1 class="h5 card-header text-center py-4">
+            <i class="fas fa-sign-in-alt me-4"></i><strong>Ingresar</strong>
+          </h1>
+          <div class="card-body px-lg-5 pt-4">
+            <div class="form-row">
+              <div class="col">
+                <div class="md-form mb-2">
+                  <div class="form-floating">
+                    <input type="email" [(ngModel)]="loginCorreo" class="form-control form-control-sm" id="correo"
+                      placeholder="">
+                    <label for="floatingInput">Correo electrónico</label>
+                  </div>
+                </div>
+                <div class="md-form">
+                  <div class="form-floating">
+                    <input type="password" [(ngModel)]="loginContrasenia" class="form-control form-control-sm"
+                      id="password" placeholder="">
+                    <label for="floatingInput">Contraseña</label>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-success me-2" (click)="loggearse()">Aceptar</button>
+                <button type="button" class="btn btn-danger me-2" (click)="cerrarModalLogin()">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="loginRegistro">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-5 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-5 pt-0">
+        <div class="nga-card">
+          <h1 class="h5 card-header text-center py-4">
+            <i class="fas fa-user-plus me-4"></i><strong>Registrarse</strong>
+          </h1>
+          <div class="card-body px-lg-5 pt-4">
+            <div class="form-row">
+              <div class="col">
+                <div class="md-form mb-2">
+                  <div class="form-floating">
+                    <input type="name" [ngModelOptions]="{ standalone: true }" [(ngModel)]="registroNombre"
+                      class="form-control form-control-sm" id="nombre" placeholder="Escribe tu nombre completo.">
+                    <label for="floatingInput">Nombre</label>
+                  </div>
+                </div>
+                <div class="md-form mb-2">
+                  <div class="form-floating">
+                    <input type="email" [ngModelOptions]="{ standalone: true }" [(ngModel)]="registroCorreo"
+                      class="form-control form-control-sm" id="correo" placeholder="">
+                    <label for="floatingInput">Correo</label>
+                  </div>
+                </div>
+                <div class="md-form mb-2">
+                  <div class="form-floating">
+                    <input type="password" [ngModelOptions]="{ standalone: true }" [(ngModel)]="registroContra"
+                      class="form-control form-control-sm" id="password" placeholder="">
+                    <label for="floatingInput">Contraseña</label>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-success me-2" (click)="registrarse()">Aceptar</button>
+                <button type="button" class="btn btn-danger me-2" (click)="cerrarModalRegistro()">Cancelar</button>
+                <hr>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modalSesion">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-5 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-5 pt-0">
+        <div class="nga-card">
+          <h1 class="h5 card-header text-center py-4">
+            <i class="fas fa-user-plus me-4"></i><strong>Perfil de {{nombre}}</strong>
+          </h1>
+          <div class="card-body px-lg-5 pt-4">
+            <div class="form-row">
+              <div class="col">
+                <div class="md-form mb-2">
+                  <div class="form-floating">
+                    <input type="name" [ngModelOptions]="{ standalone: true }" [(ngModel)]="nombre"
+                      class="form-control form-control-sm" id="nombre" placeholder="Escribe tu nombre completo.">
+                    <label for="floatingInput">Nombre</label>
+                  </div>
+                </div>
+                <div class="md-form mb-2">
+                  <div class="form-floating">
+                    <input type="email" [ngModelOptions]="{ standalone: true }" [(ngModel)]="loginCorreo" disabled
+                      class="form-control form-control-sm" id="correo" placeholder="">
+                    <label for="floatingInput">Correo</label>
+                  </div>
+                </div>
+                <div class="md-form mb-2">
+                  <div class="form-floating">
+                    <input type="password" [ngModelOptions]="{ standalone: true }" [(ngModel)]="loginContrasenia"
+                      class="form-control form-control-sm" id="password" placeholder="">
+                    <label for="floatingInput">Contraseña</label>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-success me-2" (click)="actualizarPerfil()">Actualizar</button>
+                <button type="button" class="btn btn-danger me-2" (click)="cerrarModalSesion()">Cancelar</button>
+                <button type="button" class="btn btn-warning me-2" (click)="cerrar()">¿Deseas cerrar sesión?</button>
+                <hr>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

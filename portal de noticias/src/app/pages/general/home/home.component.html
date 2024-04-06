@@ -1,0 +1,179 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="d-flex">
+      <div class="d-flex me-auto">
+        <input #selectedField type="text" class="form-control me-2" id="searchField" name="searchField"
+          [(ngModel)]="searchField" (keydown.enter)="buscar($event)" placeholder="buscar ...">
+        <select id="selectCategoria" class="form-control" [(ngModel)]="category" (change)="buscarPorCategoria($event)"
+          aria-placeholder="Categoría">
+          <option value="" selected>Categoría</option>
+          <option *ngFor="let categoria of categorias" value="{{ categoria.value }}">{{ categoria.nombre }}</option>
+        </select>
+        <button type="button" class="btn nga-btn-primary btn-sm nga-btn" (click)="buscar($event)"><i
+            class="fa fa-search"></i></button>
+        <button type="button" class="btn nga-btn-primary btn-sm nga-btn" (click)="runQuery()"><i
+            class="fa fa-close"></i></button>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row mb-2">
+
+  </div>
+  <div class="d-flex align-items-center" *ngIf="cargando">
+    <strong>Cargando noticias...</strong>
+    <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+  </div>
+  <div class="row" *ngIf="!cargando">
+    <div class="col-8 text-center">
+      <div class="col-12" *ngFor="let item of items | slice:0:10; let i=index">
+        <div class="nga-card-step nga-text-black p-4 ">
+          <a (click)="abrirNoticia(item)" class="pointer">
+            <h3 class="h4 nga-text-primary fw-bold">{{ item.title }}</h3>
+            <img class="img-fluid card-img-top" src="{{ item.urlToImage }}" alt="Card image cap"
+              *ngIf="item.urlToImage!=null">
+            <p>{{ item.description }}</p>
+          </a>
+          <div class="row text-left ">
+            <div class="col-6">
+              <p *ngIf="item.author!=null;">
+                Autor: {{ item.author }}
+              </p>
+            </div>
+            <div class="col-6">
+              <p>
+                Fecha de publicación: {{ item.publishedAt | date:'dd/MM/YYYY' }}
+              </p>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-start">
+            <button type="button" class="btn btn-primary me-2" (click)="verComentarios(item.title)">Comentarios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="row">
+        <h3>Noticias Recientes...</h3>
+      </div>
+      <div class="row" *ngFor="let noticia of noticiasTop | slice:0:5; let i=index">
+        <div class="col nga-text-black">
+          <div class="p-2">
+            <a href="{{ noticia.url }}" target="_blank">
+              <span class="h8">{{ noticia.title }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="noticiaModal">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-5 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-5 pt-0">
+        <br>
+        <div class="text-center" style="font-size:20px">
+          <p>{{ title }}
+          </p>
+          <p class="h2-responsive">
+            <strong>{{ description }}
+            </strong>
+          </p>
+          <div class="row d-flex justify-content-start">
+            <div class="col-md-16">
+              <img class="img-fluid card-img-top" src="{{ urlToImage }}" alt="Card image cap">
+            </div>
+          </div>
+          <div class="row d-flex justify-content-left">
+            <div class="col-md-12 p-4">
+              {{ content }}
+            </div>
+          </div>
+          <div class="row d-flex text-left">
+            <div class="col-md-6 p-2">
+              <p>
+                {{ autor }}
+              </p>
+            </div>
+            <div class="col-md-4 p-2">
+              <p>
+                Fecha de publicación: {{ fecha | date:'dd/MM/YYYY' }}
+              </p>
+            </div>
+          </div>
+          <div class="row d-flex text-left">
+            <div class="col-md-6 p-2">
+              <p>
+                <a href="{{url}}" target="_blank">Fuente</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="comentariosModal">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-5 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-5 pt-0">
+        <br>
+        <div class="text-center pb-4" style="font-size:20px">
+          <div *ngIf="tieneComentarios">
+            <p>
+              Comentarios sobre: {{ titulo }}
+            </p>
+            <div>
+              <div class="row bc-bottom" *ngFor="let comentario of comments" style="text-align: left !important;">
+                <div class="row">
+                  <div class="col-4 text-left">Nombre: {{comentario.nombre}}</div>
+                  <div class="col-4 text-left">Correo: {{comentario.correo}}</div>
+                  <div class="col-4 text-left">Fecha: {{comentario.fecha | date:'dd/MM/YYYY'}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-12 text-left pb-4" style="text-align: left !important; font-size: 12px;">
+                    {{comentario.comentario}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center pb-4" style="font-size:20px" *ngIf="!tieneComentarios">
+            Esta noticia no tiene comentarios.
+          </div>
+          <div class="row d-flex justify-content-start">
+            <div class="mb-3">
+              <label for="nombre"  class="form-label">Nombre</label>
+              <input type="text" disabled class="form-control" id="nombre" name="nombre" [(ngModel)]="nombre"
+                aria-describedby="nombreHelp">
+            </div>
+            <div class="mb-3">
+              <label for="correo"  class="form-label">Correo electrónico</label>
+              <input type="text"  disabled class="form-control" id="correo" name="correo" [(ngModel)]="correo"
+                aria-describedby="correoHelp">
+            </div>
+            <div class="mb-3">
+              <label for="comentario" class="form-label">Comentario</label>
+              <textarea class="form-control" [(ngModel)]="comt" name="comentario" rows="4" id="comentario"></textarea>
+            </div>
+            <div class="card mb-2">
+              <div class="card-body">
+                <button type="button" class="btn btn-success me-2" (click)="enviarComentario()">Enviar</button>
+                <button type="button" class="btn btn-danger me-2" (click)="cerrarModalComentarios()">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
